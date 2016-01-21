@@ -1,23 +1,29 @@
 if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault('counter', 0);
-
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get('counter');
-    }
-  });
 
   Template.hello.events({
+
     'click button': function () {
-      // increment the counter when button is clicked
-      Session.set('counter', Session.get('counter') + 1);
+      Meteor.call("getWeather");
     }
+    
   });
 }
 
 if (Meteor.isServer) {
-  Meteor.startup(function () {
-    // code to run on server at startup
+
+    Meteor.methods({
+
+      getWeather: function() {
+        let url = "http://api.wunderground.com/api/a7e4a9975d790f02/hourly10day/q/CA/San_Francisco.json";
+
+        HTTP.get(url, (error, results) => {
+          if (error) { 
+            console.log(error)
+          } else {
+            console.dir(results.data);
+          }
+        });
+      }
+
   });
 }
